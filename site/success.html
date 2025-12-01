@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscription Successful</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>You're subscribed!</h1>
+        <p>Thank you for subscribing to RegDeadline.</p>
+        <p>Please enter your company number below so we can send your filing reminders:</p>
+
+        <form action="https://api.github.com/repos/PetrosWatts/regdeadline/dispatches" method="POST">
+            <input type="text" id="company" name="company_number" placeholder="Company Number" required>
+            <input type="email" id="email" name="email" placeholder="Your Email" required>
+            <button type="submit" class="cta">Save My Company</button>
+        </form>
+
+        <p class="note">You will start receiving reminders automatically.</p>
+    </div>
+</body>
+</html>
