@@ -1,0 +1,9 @@
+# Never upload secrets
+.env
+
+# Ignore virtual environments
+.venv/
+venv/
+
+# Ignore Python cache
+__pycache__/
