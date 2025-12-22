@@ -50,11 +50,14 @@ def scan_for_leads():
                 continue
             if deadline_in_range(date, 60):
                 subject, body = build_outreach_email(company, dtype, date)
-                send_email(
-                to_email="petrwatts@gmail.com",
-                subject=subject,
-                body=body
-            )           
+                #send_email(
+                #to_email=company_email,
+                #subject=subject,
+                #body=body
+            #)     
+
+                print(f"[LEAD FOUND] {company} has {dtype} due on {date} (no outreach sent)")
+
                 print(f"📧 Test email sent for company {company}")
 
                 sent.add(company)

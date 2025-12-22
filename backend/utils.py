@@ -1,6 +1,6 @@
 import json
 import os
-from datetime import datetime
+from datetime import datetime, timezone
 
 import requests
 from dotenv import load_dotenv
@@ -63,5 +63,5 @@ def deadline_in_range(date_str: str, days_range: int = 30) -> bool:
 
     # Companies House dates are YYYY-MM-DD
     dt = datetime.fromisoformat(date_str)
-    diff = (dt - datetime.now()).days
+    diff = (dt - datetime.now(timezone.utc).replace(tzinfo=None)).days
     return 0 < diff <= days_range
