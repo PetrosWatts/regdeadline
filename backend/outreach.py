@@ -2,25 +2,26 @@ def build_outreach_email(company_number, deadline_type, deadline_date):
     subject = f"Upcoming Companies House deadline for {company_number}"
 
     body = f"""
-Hi,
+    Hi,
 
-I was reviewing public Companies House records and noticed that
-your company ({company_number}) has an upcoming
-{deadline_type.replace('_', ' ')} due on {deadline_date}.
+    I was reviewing public Companies House records and noticed that
+    your company ({company_number}) has an upcoming
+    {deadline_type.replace('_', ' ')} due on {deadline_date}.
 
-Many small businesses miss this simply because Companies House
-doesn’t send proactive reminders.
+    Many small businesses miss this simply because Companies House
+    doesn’t send proactive reminders.
 
-We built RegDeadline to automatically track filings and notify you
-before penalties or strike-off risk.
+    We built RegDeadline to automatically track filings and notify you
+    before penalties or strike-off risk.
 
-You can set it up in under 30 seconds here:
-👉 https://regdeadline.xyz/pay
+    You can set it up in under 30 seconds here:
+    👉 https://regdeadline.xyz/pay
 
-No obligation — just a simple safeguard.
+    No obligation — just a simple safeguard.
 
-Best,
-RegDeadline
-"""
-
+    Best,
+    RegDeadline
+    """
     return subject.strip(), body.strip()
+    body += "\n\nOpt-out: reply to this email with “unsubscribe” and you will not be contacted again."
+    body += "\n(RegDeadline: automated Companies House deadline reminders)"
