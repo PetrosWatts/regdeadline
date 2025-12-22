@@ -1,5 +1,6 @@
 from utils import load_subscribers, get_company_deadlines, deadline_in_range
 from send_email import send_deadline_email
+from backend.send_email import send_email, is_suppressed
 
 
 def main():
@@ -30,6 +31,10 @@ def main():
                     }
                 )
                 print(f"  ✅ {deadline_type} due on {date} is within window.")
+                if is_suppressed(email):
+                    print(f"  ⛔ Skipping suppressed email: {email}")
+                    continue
+                
                 send_deadline_email(email, company, deadline_type, date)
             else:
                 print(f"  ❌ {deadline_type} due on {date} is outside window.")
