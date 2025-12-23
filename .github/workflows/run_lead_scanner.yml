@@ -3,19 +3,27 @@ name: Daily Lead Scanner
 on:
   schedule:
     - cron: "0 9 * * *"   # Runs every day at 09:00 UTC
-  workflow_dispatch:      # Allows manual run from GitHub UI
+  workflow_dispatch:
 
 jobs:
-
-env:
-  SAFETY_MODE: "true"
-  DAILY_SEND_CAP: "25"
-  PER_RUN_SEND_CAP: "25"
-  SEND_SLEEP_SECONDS: "6"
-  SAFE_TEST_INBOX: "YOUR_EMAIL_HERE"
-  
   scan:
     runs-on: ubuntu-latest
+
+    env:
+      # Safety & rate limiting
+      SAFETY_MODE: "true"
+      DAILY_SEND_CAP: "25"
+      PER_RUN_SEND_CAP: "25"
+      SEND_SLEEP_SECONDS: "6"
+
+      # Where emails go while SAFETY_MODE=true
+      SAFE_TEST_INBOX: "petrwatts@gmail.com"
+
+      # Secrets
+      GMAIL_USER: ${{ secrets.GMAIL_USER }}
+      GMAIL_PASS: ${{ secrets.GMAIL_PASS }}
+      COMPANIES_HOUSE_API_KEY: ${{ secrets.COMPANIES_HOUSE_API_KEY }}
+      STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
 
     steps:
       - name: Checkout repository
@@ -32,30 +40,21 @@ env:
           pip install -r requirements.txt
 
       - name: Process unsubscribe replies
-        env:
-          GMAIL_USER: ${{ secrets.GMAIL_USER }}
-          GMAIL_PASS: ${{ secrets.GMAIL_PASS }}
         run: |
           python -m backend.unsubscribe
 
       - name: Sync subscribers from Stripe
-        env:
-          STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
         run: |
           python -m backend.stripe_sync
 
       - name: Run lead scanner
-        env:
-          GMAIL_USER: ${{ secrets.GMAIL_USER }}
-          GMAIL_PASS: ${{ secrets.GMAIL_PASS }}
-          COMPANIES_HOUSE_API_KEY: ${{ secrets.COMPANIES_HOUSE_API_KEY }}
         run: |
           python -m backend.lead_scanner
 
       - name: Commit updated state files
         run: |
-            git config user.name "github-actions[bot]"
-            git config user.email "github-actions[bot]@users.noreply.github.com"
-            git add backend/*.json || true
-            git diff --cached --quiet || git commit -m "Update RegDeadline state"
-            git push origin HEAD:${{ github.ref }}
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add backend/*.json || true
+          git diff --cached --quiet || git commit -m "Update RegDeadline state"
+          git push
