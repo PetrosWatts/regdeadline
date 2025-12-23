@@ -39,10 +39,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Process unsubscribe replies
-        run: |
-          python -m backend.unsubscribe
-
       - name: Sync subscribers from Stripe
         run: |
           python -m backend.stripe_sync
