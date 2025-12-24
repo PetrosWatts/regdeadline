@@ -30,12 +30,12 @@ def sync_from_stripe():
 
     new_entries = []
 
-    sessions = stripe.checkout.Session.list(
-        limit=100,
-        payment_status="paid"
-    )
+    sessions = stripe.checkout.Session.list(limit=100)
 
     for session in sessions.auto_paging_iter():
+        if session.payment_status != "paid":
+            continue
+
         email = (session.customer_email or "").strip().lower()
         if not email:
             continue
