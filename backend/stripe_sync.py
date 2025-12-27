@@ -74,7 +74,7 @@ def sync_from_stripe():
 
     if new_entries:
         print(f"[STRIPE] Adding {len(new_entries)} new subscribers")
-        savef_subscribers(existing + new_entries)
+        save_subscribers(existing + new_entries)
     else:
         print("[STRIPE] No new subscribers found")
 
