@@ -38,11 +38,8 @@ def sync_from_stripe():
 
         email = ""
 
-        # Preferred: customer_details.email (most reliable for Payment Links)
         if session.customer_details and session.customer_details.get("email"):
             email = session.customer_details["email"].strip().lower()
-
-        # Fallback: customer_email
         elif session.customer_email:
             email = session.customer_email.strip().lower()
 
@@ -50,31 +47,11 @@ def sync_from_stripe():
             print("[STRIPE] Paid session without email, skipping")
             continue
 
-    # Extract company number from Stripe Payment Link custom field
-        company_number = None
-        try:
-            custom_fields = getattr(session, "custom_fields", None) or []
-            for f in custom_fields:
-                label = (getattr(f, "label", "") or "").strip().lower()
-                if "company" in label and "number" in label:
-                    text = getattr(f, "text", None)
-                    if text and getattr(text, "value", None):
-                        company_number = str(text.value).strip().upper()
-                        break
-        except Exception:
-            company_number = None
-
-    # Bulletproof: do not enroll without a company number
-        if not company_number:
-            print(f"[STRIPE] Paid session missing company number for {email} — skipping")
-            continue
-
         if email in existing_emails:
             continue
 
         entry = {
             "email": email,
-            "company_number": company_number,
             "source": "stripe",
             "added_at": datetime.now(timezone.utc).isoformat()
         }
