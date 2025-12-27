@@ -36,8 +36,18 @@ def sync_from_stripe():
         if session.payment_status != "paid":
             continue
 
-        email = (session.customer_email or "").strip().lower()
+        email = ""
+
+        # Preferred: customer_details.email (most reliable for Payment Links)
+        if session.customer_details and session.customer_details.get("email"):
+            email = session.customer_details["email"].strip().lower()
+
+        # Fallback: customer_email
+        elif session.customer_email:
+            email = session.customer_email.strip().lower()
+
         if not email:
+            print("[STRIPE] Paid session without email, skipping")
             continue
 
     # Extract company number from Stripe Payment Link custom field
