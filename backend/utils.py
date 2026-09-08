@@ -13,10 +13,17 @@ COMPANIES_HOUSE_API_KEY = os.getenv("COMPANIES_HOUSE_API_KEY")
 
 
 def load_subscribers():
-    """Load subscribers from backend/subscribers.json"""
+    """Load subscribers from backend/subscribers.json.
+
+    The file is gitignored — it holds customer emails and this repo is public —
+    so it is absent on a fresh checkout. Absent means no subscribers, not a crash.
+    """
     path = os.path.join(os.path.dirname(__file__), "subscribers.json")
-    with open(path, "r") as f:
-        return json.load(f)
+    try:
+        with open(path, "r") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return []
 
 
 def save_subscribers(data):

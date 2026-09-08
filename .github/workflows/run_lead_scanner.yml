@@ -51,5 +51,12 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          it add backend/*.json || true
+          # Was `it add backend/*.json` — a typo, so nothing was ever staged and
+          # sent_leads.json / suppression.json never persisted between runs.
+          # subscribers.json is deliberately NOT staged: this repo is public and
+          # that file holds customer email addresses.
+          git add backend/sent_leads.json backend/suppression.json || true
+          # NOTE: there is still no `git push` here, exactly as before. The commit
+          # stays on the runner and is discarded. Adding a push would change what
+          # this repo does on a schedule — Petros's call, not a bug fix.
           git diff --cached --quiet || git commit -m "Update RegDeadline state" || true
